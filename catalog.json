@@ -1155,10 +1155,10 @@
             "healthy_error": null,
             "home": "https://prometheus.io",
             "location": "/__w/apps/apps/trains/stable/prometheus",
-            "latest_version": "1.4.6",
-            "latest_app_version": "v3.11.1",
-            "latest_human_version": "v3.11.1_1.4.6",
-            "last_update": "2026-04-07 18:46:43",
+            "latest_version": "1.4.7",
+            "latest_app_version": "v3.11.2",
+            "latest_human_version": "v3.11.2_1.4.7",
+            "last_update": "2026-04-14 12:23:06",
             "name": "prometheus",
             "recommended": false,
             "title": "Prometheus",
@@ -6179,10 +6179,10 @@
             "healthy_error": null,
             "home": "https://github.com/connorgallopo/tracearr",
             "location": "/__w/apps/apps/trains/community/tracearr",
-            "latest_version": "1.2.17",
+            "latest_version": "1.2.18",
             "latest_app_version": "1.4.27",
-            "latest_human_version": "1.4.27_1.2.17",
-            "last_update": "2026-04-09 12:47:27",
+            "latest_human_version": "1.4.27_1.2.18",
+            "last_update": "2026-04-14 12:23:06",
             "name": "tracearr",
             "recommended": false,
             "title": "Tracearr",
@@ -13278,10 +13278,10 @@
             "healthy_error": null,
             "home": "https://mempool.space",
             "location": "/__w/apps/apps/trains/community/mempool",
-            "latest_version": "1.2.2",
+            "latest_version": "1.2.3",
             "latest_app_version": "v3.3.0",
-            "latest_human_version": "v3.3.0_1.2.2",
-            "last_update": "2026-04-14 10:34:51",
+            "latest_human_version": "v3.3.0_1.2.3",
+            "last_update": "2026-04-14 12:23:06",
             "name": "mempool",
             "recommended": false,
             "title": "Mempool",
@@ -18859,10 +18859,10 @@
             "healthy_error": null,
             "home": "https://opencloud.eu",
             "location": "/__w/apps/apps/trains/community/opencloud",
-            "latest_version": "1.2.9",
-            "latest_app_version": "4.0.5",
-            "latest_human_version": "4.0.5_1.2.9",
-            "last_update": "2026-04-08 15:24:34",
+            "latest_version": "1.2.10",
+            "latest_app_version": "6.0.0",
+            "latest_human_version": "6.0.0_1.2.10",
+            "last_update": "2026-04-15 12:28:40",
             "name": "opencloud",
             "recommended": false,
             "title": "OpenCloud",
@@ -18881,7 +18881,7 @@
             "sources": [
                 "https://docs.opencloud.eu/",
                 "https://github.com/OpenCloud/OpenCloud",
-                "https://hub.docker.com/r/opencloudeu/opencloud"
+                "https://hub.docker.com/r/opencloudeu/opencloud-rolling"
             ],
             "icon_url": "https://media.sys.truenas.net/apps/opencloud/icons/icon.svg",
             "capabilities": [],
@@ -19172,10 +19172,10 @@
             "healthy_error": null,
             "home": "https://github.com/chrislongros/anki-sync-server-enhanced",
             "location": "/__w/apps/apps/trains/community/anki-sync-server",
-            "latest_version": "1.1.3",
+            "latest_version": "1.1.4",
             "latest_app_version": "25.09.2",
-            "latest_human_version": "25.09.2_1.1.3",
-            "last_update": "2026-04-03 12:46:56",
+            "latest_human_version": "25.09.2_1.1.4",
+            "last_update": "2026-04-15 12:40:16",
             "name": "anki-sync-server",
             "recommended": false,
             "title": "Anki Sync Server",
@@ -20264,6 +20264,55 @@
                     "group_name": "Host group is [docker]",
                     "uid": 999,
                     "user_name": "Host user is [netdata]"
+                }
+            ]
+        },
+        "qdrant": {
+            "app_readme": "<h1>Qdrant</h1> <p><a href=\"https://qdrant.tech\">Qdrant</a> is a vector similarity search engine and vector database. It provides a production-ready service with a convenient API to store, search, and manage vectors with additional payload.</p>",
+            "categories": [
+                "database"
+            ],
+            "description": "Qdrant is a vector similarity search engine and vector database. It provides a production-ready service with a convenient API to store, search, and manage vectors with additional payload.",
+            "healthy": true,
+            "healthy_error": null,
+            "home": "https://qdrant.tech",
+            "location": "/__w/apps/apps/trains/community/qdrant",
+            "latest_version": "1.0.0",
+            "latest_app_version": "1.17.1",
+            "latest_human_version": "1.17.1_1.0.0",
+            "last_update": "2026-04-14 11:37:25",
+            "name": "qdrant",
+            "recommended": false,
+            "title": "Qdrant",
+            "maintainers": [
+                {
+                    "email": "dev@truenas.com",
+                    "name": "truenas",
+                    "url": "https://www.truenas.com/"
+                }
+            ],
+            "tags": [
+                "vector",
+                "database",
+                "search",
+                "ai",
+                "embeddings",
+                "gpu"
+            ],
+            "screenshots": [],
+            "sources": [
+                "https://hub.docker.com/r/qdrant/qdrant",
+                "https://github.com/qdrant/qdrant"
+            ],
+            "icon_url": "https://media.sys.truenas.net/apps/qdrant/icons/icon.svg",
+            "capabilities": [],
+            "run_as_context": [
+                {
+                    "description": "Container [qdrant] can run as any non-root user and group.",
+                    "gid": 568,
+                    "group_name": "Host group is [apps]",
+                    "uid": 568,
+                    "user_name": "Host user is [apps]"
                 }
             ]
         },
