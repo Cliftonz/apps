@@ -25,7 +25,7 @@ module.exports = {
       fileMatch: ["^ix-dev/.*/ix_values\\.yaml$"],
       // Matches the repository name and the tag of each image
       matchStrings: [
-        '\\s{4}repository: (?<depName>[^\\s]+)\\n\\s{4}tag: "?(?<currentValue>[^\\s"]+)"?',
+        '\\s{4}repository: (?<depName>[^\\s]+)\\n\\s{4}tag: ["\']?(?<currentValue>[^\\s"\']+)["\']?',
       ],
       // Use the docker datasource on matched images
       datasourceTemplate: "docker",
@@ -213,9 +213,14 @@ module.exports = {
       ["ghcr.io/koush/scrypted"],
     ),
     customVersioning(
-      // 24.7
+      // v24.7
       "^v(?<major>\\d+)\\.(?<minor>\\d+)$",
       ["nzbgetcom/nzbget"],
+    ),
+    customVersioning(
+      // 0.96
+      "^(?<major>\\d+)\\.(?<minor>\\d+)$",
+      ["bbernhard/signal-cli-rest-api"],
     ),
     customVersioning(
       // vanilla-1.4.4.9
