@@ -1,0 +1,43 @@
+annotations:
+  min_scale_version: 25.10.0
+app_version: v0.9.0
+capabilities: []
+categories:
+- management
+changelog_url: https://github.com/siderolabs/omni-infra-provider-bare-metal/releases
+date_added: '2026-04-20'
+description: Sidero Omni infrastructure provider that PXE-boots and manages bare-metal
+  Talos Linux nodes.
+home: https://github.com/siderolabs/omni-infra-provider-bare-metal
+host_mounts: []
+icon: ""
+keywords:
+- kubernetes
+- omni
+- talos
+- sidero
+- cluster
+- bare-metal
+- pxe
+- ipxe
+- dhcp
+lib_version: 2.3.2
+lib_version_hash: ""
+maintainers:
+- email: dev@truenas.com
+  name: truenas
+  url: https://www.truenas.com/
+name: omni-infra-provider-bare-metal
+run_as_context:
+- description: Container [omni-infra-provider-bare-metal] runs as root to bind the
+    privileged DHCP proxy port (UDP 67).
+  gid: 0
+  group_name: Host group is [root]
+  uid: 0
+  user_name: Host user is [root]
+screenshots: []
+sources:
+- https://github.com/siderolabs/omni-infra-provider-bare-metal
+title: Omni Bare Metal Provider
+train: community
+version: 1.0.0

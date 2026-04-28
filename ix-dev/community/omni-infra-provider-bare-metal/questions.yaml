@@ -1,0 +1,697 @@
+groups:
+  - name: Omni Bare Metal Provider Configuration
+    description: Configure Omni Bare Metal Provider
+  - name: Network Configuration
+    description: Configure Network for Omni Bare Metal Provider
+  - name: Storage Configuration
+    description: Configure Storage for Omni Bare Metal Provider
+  - name: Labels Configuration
+    description: Configure Labels for Omni Bare Metal Provider
+  - name: Resources Configuration
+    description: Configure Resources for Omni Bare Metal Provider
+
+questions:
+  - variable: omni
+    label: ""
+    group: Omni Bare Metal Provider Configuration
+    schema:
+      type: dict
+      attrs:
+        - variable: endpoint
+          label: Omni Endpoint
+          description: Full URL of your Omni instance (e.g., https://omni.example.com).
+          schema:
+            type: string
+            required: true
+        - variable: service_account_key
+          label: Omni Service Account Key
+          description: |
+            Base64-encoded service account key.</br>
+            Create with: <code>omnictl serviceaccount create --role=InfraProvider infra-provider:bare-metal</code>
+          schema:
+            type: string
+            required: true
+            private: true
+        - variable: insecure_skip_verify
+          label: Skip Omni TLS Verification
+          description: Disable TLS certificate verification when connecting to the Omni API.
+          schema:
+            type: boolean
+            default: false
+        - variable: provider_id
+          label: Provider ID
+          description: |
+            Unique provider identifier registered in Omni.</br>
+            Must match the ID used with <code>omnictl infraprovider create</code>.
+          schema:
+            type: string
+            default: "bare-metal"
+            required: true
+        - variable: provider_name
+          label: Provider Display Name
+          description: How this provider appears in the Omni UI.
+          schema:
+            type: string
+            default: "Bare Metal"
+        - variable: provider_description
+          label: Provider Description
+          schema:
+            type: string
+            default: "Bare metal infrastructure provider"
+        - variable: additional_envs
+          label: Additional Environment Variables
+          description: Configure additional environment variables for the provider.
+          schema:
+            type: list
+            default: []
+            items:
+              - variable: env
+                label: Environment Variable
+                schema:
+                  type: dict
+                  attrs:
+                    - variable: name
+                      label: Name
+                      schema:
+                        type: string
+                        required: true
+                    - variable: value
+                      label: Value
+                      schema:
+                        type: string
+
+  - variable: api
+    label: ""
+    group: Omni Bare Metal Provider Configuration
+    schema:
+      type: dict
+      attrs:
+        - variable: advertise_address
+          label: API Advertise Address
+          description: |
+            IP address the provider advertises to bare-metal machines.</br>
+            Required if the host has more than one routable IP. Leave empty to auto-detect.
+          schema:
+            type: string
+            default: ""
+        - variable: listen_address
+          label: API Listen Address
+          description: |
+            IP address the provider's API server binds to.</br>
+            Leave empty to listen on all interfaces.
+          schema:
+            type: string
+            default: ""
+
+  - variable: image_factory
+    label: ""
+    group: Omni Bare Metal Provider Configuration
+    schema:
+      type: dict
+      attrs:
+        - variable: base_url
+          label: Image Factory Base URL
+          description: Base URL of the Talos Image Factory.
+          schema:
+            type: string
+            default: "https://factory.talos.dev"
+            required: true
+        - variable: pxe_base_url
+          label: Image Factory PXE Base URL
+          description: Base URL of the Image Factory PXE server.
+          schema:
+            type: string
+            default: "https://pxe.factory.talos.dev"
+            required: true
+        - variable: agent_mode_talos_version
+          label: Agent Mode Talos Version
+          description: |
+            Default Talos version used when forwarding iPXE requests to the Image Factory for agent-mode boot.</br>
+            Must include the agent code (Talos 1.9 or newer).
+          schema:
+            type: string
+            default: "v1.13.0"
+            required: true
+        - variable: use_local_boot_assets
+          label: Use Local Boot Assets
+          description: |
+            Serve the boot assets bundled inside the provider image instead of forwarding to the Image Factory.</br>
+            Useful for air-gapped deployments or when testing local Talos Metal Agent builds.
+          schema:
+            type: boolean
+            default: false
+
+  - variable: dhcp
+    label: ""
+    group: Omni Bare Metal Provider Configuration
+    schema:
+      type: dict
+      attrs:
+        - variable: disable_proxy
+          label: Disable DHCP Proxy
+          description: |
+            Disable the DHCP proxy entirely.</br>
+            Use this when PXE boot is handled by an external system (e.g., Matchbox, dnsmasq).
+          schema:
+            type: boolean
+            default: false
+        - variable: disable_broadcast
+          label: Disable DHCP Proxy Broadcast
+          description: |
+            Disable the broadcast listener on UDP 67. The proxy then only listens on UDP 4011 for direct PXE requests.</br>
+            Use this when the provider runs alongside an existing DHCP server that chains PXE to it.
+          schema:
+            type: boolean
+            default: false
+        - variable: iface_or_ip
+          label: DHCP Proxy Interface or IP
+          description: |
+            Interface name (e.g. <code>eth0</code>) or IP address on the interface for the DHCP proxy.</br>
+            Leave empty to default to the API advertise address.
+          schema:
+            type: string
+            default: ""
+
+  - variable: boot
+    label: ""
+    group: Omni Bare Metal Provider Configuration
+    schema:
+      type: dict
+      attrs:
+        - variable: from_disk_method
+          label: Boot From Disk Method
+          description: |
+            Method used to boot a server from disk after install when it hits the iPXE endpoint.
+          schema:
+            type: string
+            default: "ipxe-exit"
+            required: true
+            enum:
+              - value: "ipxe-exit"
+                description: iPXE Exit (recommended)
+              - value: "http-404"
+                description: HTTP 404
+              - value: "ipxe-sanboot"
+                description: iPXE Sanboot
+        - variable: ipmi_pxe_boot_mode
+          label: IPMI PXE Boot Mode
+          description: Default boot mode used when PXE booting a machine via IPMI.
+          schema:
+            type: string
+            default: "UEFI"
+            required: true
+            enum:
+              - value: "UEFI"
+                description: UEFI (recommended)
+              - value: "BIOS"
+                description: Legacy BIOS
+        - variable: secure_boot_enabled
+          label: Secure Boot Enabled
+          description: |
+            Serve a secure-boot UKI from the iPXE endpoint.</br>
+            When enabled, IPMI PXE boot mode must be UEFI and Use Local Boot Assets must be off.
+          schema:
+            type: boolean
+            default: false
+
+  - variable: redfish
+    label: ""
+    group: Omni Bare Metal Provider Configuration
+    schema:
+      type: dict
+      attrs:
+        - variable: use_when_available
+          label: Use Redfish When Available
+          description: Prefer Redfish for power management when the BMC supports it.
+          schema:
+            type: boolean
+            default: false
+        - variable: use_always
+          label: Always Use Redfish
+          description: Always use Redfish for power management; fail if the BMC does not support it.
+          schema:
+            type: boolean
+            default: false
+        - variable: use_https
+          label: Use HTTPS for Redfish
+          schema:
+            type: boolean
+            default: true
+        - variable: insecure_skip_tls_verify
+          label: Skip Redfish TLS Verification
+          description: Skip TLS verification when connecting to Redfish endpoints.
+          schema:
+            type: boolean
+            default: true
+        - variable: port
+          label: Redfish Port
+          schema:
+            type: int
+            default: 443
+            min: 1
+            max: 65535
+            required: true
+        - variable: set_boot_source_override_mode
+          label: Set Boot Source Override Mode
+          description: |
+            Set the boot source override mode field on Redfish power operations.</br>
+            Some Redfish implementations require this field to be unset.
+          schema:
+            type: boolean
+            default: true
+
+  - variable: tls
+    label: ""
+    group: Omni Bare Metal Provider Configuration
+    schema:
+      type: dict
+      attrs:
+        - variable: enabled
+          label: Enable TLS for API Server
+          description: |
+            Enable TLS on the provider's API server.</br>
+            When enabled, the provider issues short-lived certificates from a self-generated CA unless CA/cert/key files are mounted.
+          schema:
+            type: boolean
+            default: false
+        - variable: agent_skip_verify
+          label: Agent Skip TLS Verify
+          description: Make the Talos agent gRPC client skip TLS verification when connecting to the provider.
+          schema:
+            type: boolean
+            default: false
+
+  - variable: advanced
+    label: ""
+    group: Omni Bare Metal Provider Configuration
+    schema:
+      type: dict
+      attrs:
+        - variable: min_reboot_interval
+          label: Minimum Reboot Interval
+          description: |
+            Minimum time between reboots issued by the provider (Go duration, e.g. <code>15m</code>, <code>1h</code>).</br>
+            Prevents reboot storms.
+          schema:
+            type: string
+            default: "15m"
+            required: true
+        - variable: wipe_with_zeroes
+          label: Wipe With Zeroes
+          description: Write zeroes to the whole disk when wiping a machine instead of a fast wipe.
+          schema:
+            type: boolean
+            default: false
+        - variable: enable_resource_cache
+          label: Enable Resource Cache
+          description: Enable controller runtime resource cache.
+          schema:
+            type: boolean
+            default: false
+        - variable: debug
+          label: Debug Logging
+          schema:
+            type: boolean
+            default: false
+        - variable: machine_labels
+          label: Machine Labels
+          description: |
+            Labels applied to every machine registered through this provider.</br>
+            Format: <code>key=value</code> per entry. A bare key (no value) sets an empty-value label.
+          schema:
+            type: list
+            default: []
+            items:
+              - variable: label
+                label: Label
+                schema:
+                  type: string
+
+  - variable: network
+    label: ""
+    group: Network Configuration
+    schema:
+      type: dict
+      attrs:
+        - variable: host_network
+          label: Host Network
+          description: |
+            Bind to the host network.</br>
+            The DHCP proxy needs L2 broadcast access (UDP 67) to reach bare-metal machines.</br>
+            Enable this OR attach the container to a docker macvlan/ipvlan via Networks below.</br>
+            If you disable the DHCP proxy entirely, neither is required.
+          schema:
+            type: boolean
+            default: false
+        - variable: api_port
+          label: API Port
+          description: Port the provider API server listens on.
+          schema:
+            type: dict
+            show_if: [["host_network", "=", false]]
+            attrs:
+              - variable: bind_mode
+                label: Port Bind Mode
+                schema:
+                  type: string
+                  default: "published"
+                  enum:
+                    - value: "published"
+                      description: Publish port on the host for external access
+                    - value: "exposed"
+                      description: Expose port internally for inter-container access only
+                    - value: ""
+                      description: Disable port
+              - variable: port_number
+                label: Port Number
+                schema:
+                  type: int
+                  default: 50042
+                  min: 1
+                  max: 65535
+                  required: true
+              - variable: host_ips
+                label: Host IPs
+                description: IPs on the host to bind this port to.
+                schema:
+                  type: list
+                  default: []
+                  items:
+                    - variable: host_ip
+                      label: Host IP
+                      schema:
+                        type: string
+                        required: true
+        - variable: networks
+          label: Networks
+          description: The docker networks to join.
+          schema:
+            type: list
+            show_if: [["host_network", "=", false]]
+            default: []
+            items:
+              - variable: network
+                label: Network
+                schema:
+                  type: dict
+                  attrs:
+                    - variable: name
+                      label: Name
+                      description: |
+                        The name of the network to join.</br>
+                        The network must already exist.
+                      schema:
+                        type: string
+                        default: ""
+                        required: true
+                    - variable: containers
+                      label: Containers
+                      description: The containers to add to this network.
+                      schema:
+                        type: list
+                        items:
+                          - variable: container
+                            label: Container
+                            schema:
+                              type: dict
+                              attrs:
+                                - variable: name
+                                  label: Container Name
+                                  schema:
+                                    type: string
+                                    required: true
+                                    enum:
+                                      - value: omni-infra-provider-bare-metal
+                                        description: omni-infra-provider-bare-metal
+                                - variable: config
+                                  label: Container Network Configuration
+                                  schema:
+                                    type: dict
+                                    attrs:
+                                      - variable: aliases
+                                        label: Aliases (Optional)
+                                        description: The network aliases to use for this container on this network.
+                                        schema:
+                                          type: list
+                                          default: []
+                                          items:
+                                            - variable: alias
+                                              label: Alias
+                                              schema:
+                                                type: string
+                                      - variable: interface_name
+                                        label: Interface Name (Optional)
+                                        description: The network interface name to use for this network
+                                        schema:
+                                          type: string
+                                      - variable: mac_address
+                                        label: MAC Address (Optional)
+                                        description: The MAC address to use for this network interface.
+                                        schema:
+                                          type: string
+                                      - variable: ipv4_address
+                                        label: IPv4 Address (Optional)
+                                        description: The IPv4 address to use for this network interface.
+                                        schema:
+                                          type: string
+                                      - variable: ipv6_address
+                                        label: IPv6 Address (Optional)
+                                        description: The IPv6 address to use for this network interface.
+                                        schema:
+                                          type: string
+                                      - variable: gw_priority
+                                        label: Gateway Priority (Optional)
+                                        description: Indicates the priority of the gateway for this network interface.
+                                        schema:
+                                          type: int
+                                          "null": true
+                                      - variable: priority
+                                        label: Priority (Optional)
+                                        description: Indicates in which order Compose connects the service's containers to its networks.
+                                        schema:
+                                          type: int
+                                          "null": true
+
+  - variable: storage
+    label: ""
+    group: Storage Configuration
+    schema:
+      type: dict
+      attrs:
+        - variable: additional_storage
+          label: Additional Storage
+          schema:
+            type: list
+            default: []
+            items:
+              - variable: storageEntry
+                label: Storage Entry
+                schema:
+                  type: dict
+                  attrs:
+                    - variable: type
+                      label: Type
+                      description: |
+                        ixVolume: Is dataset created automatically by the system.</br>
+                        Host Path: Is a path that already exists on the system.</br>
+                        SMB Share: Is a SMB share that is mounted to as a volume.</br>
+                        NFS Share: Is a NFS share that is mounted to as a volume.
+                      schema:
+                        type: string
+                        required: true
+                        default: "ix_volume"
+                        enum:
+                          - value: "host_path"
+                            description: Host Path (Path that already exists on the system)
+                          - value: "ix_volume"
+                            description: ixVolume (Dataset created automatically by the system)
+                          - value: "cifs"
+                            description: SMB/CIFS Share (Mounts a volume to a SMB share)
+                          - value: "nfs"
+                            description: NFS Share (Mounts a volume to a NFS share)
+                    - variable: read_only
+                      label: Read Only
+                      description: Mount the volume as read only.
+                      schema:
+                        type: boolean
+                        default: false
+                    - variable: mount_path
+                      label: Mount Path
+                      description: The path inside the container to mount the storage.
+                      schema:
+                        type: path
+                        required: true
+                    - variable: host_path_config
+                      label: Host Path Configuration
+                      schema:
+                        type: dict
+                        show_if: [["type", "=", "host_path"]]
+                        attrs:
+                          - variable: acl_enable
+                            label: Enable ACL
+                            description: Enable ACL for the storage.
+                            schema:
+                              type: boolean
+                              default: false
+                          - variable: acl
+                            label: ACL Configuration
+                            schema:
+                              type: dict
+                              show_if: [["acl_enable", "=", true]]
+                              attrs: []
+                              $ref:
+                                - "normalize/acl"
+                          - variable: path
+                            label: Host Path
+                            description: The host path to use for storage.
+                            schema:
+                              type: hostpath
+                              show_if: [["acl_enable", "=", false]]
+                              required: true
+                    - variable: ix_volume_config
+                      label: ixVolume Configuration
+                      description: The configuration for the ixVolume dataset.
+                      schema:
+                        type: dict
+                        show_if: [["type", "=", "ix_volume"]]
+                        $ref:
+                          - "normalize/ix_volume"
+                        attrs:
+                          - variable: acl_enable
+                            label: Enable ACL
+                            description: Enable ACL for the storage.
+                            schema:
+                              type: boolean
+                              default: false
+                          - variable: dataset_name
+                            label: Dataset Name
+                            description: The name of the dataset to use for storage.
+                            schema:
+                              type: string
+                              required: true
+                              default: "storage_entry"
+                          - variable: acl_entries
+                            label: ACL Configuration
+                            schema:
+                              type: dict
+                              show_if: [["acl_enable", "=", true]]
+                              attrs: []
+                    - variable: cifs_config
+                      label: SMB Configuration
+                      description: The configuration for the SMB dataset.
+                      schema:
+                        type: dict
+                        show_if: [["type", "=", "cifs"]]
+                        attrs:
+                          - variable: server
+                            label: Server
+                            description: The server to mount the SMB share.
+                            schema:
+                              type: string
+                              required: true
+                          - variable: path
+                            label: Path
+                            description: The path to mount the SMB share.
+                            schema:
+                              type: string
+                              required: true
+                          - variable: username
+                            label: Username
+                            description: The username to use for the SMB share.
+                            schema:
+                              type: string
+                              required: true
+                          - variable: password
+                            label: Password
+                            description: The password to use for the SMB share.
+                            schema:
+                              type: string
+                              required: true
+                              private: true
+                          - variable: domain
+                            label: Domain
+                            description: The domain to use for the SMB share.
+                            schema:
+                              type: string
+                    - variable: nfs_config
+                      label: NFS Configuration
+                      description: The configuration for the NFS dataset.
+                      schema:
+                        type: dict
+                        show_if: [["type", "=", "nfs"]]
+                        attrs:
+                          - variable: server
+                            label: Server
+                            description: The server to mount the NFS share.
+                            schema:
+                              type: string
+                              required: true
+                          - variable: path
+                            label: Path
+                            description: The path to mount the NFS share.
+                            schema:
+                              type: string
+                              required: true
+
+  - variable: labels
+    label: ""
+    group: Labels Configuration
+    schema:
+      type: list
+      default: []
+      items:
+        - variable: label
+          label: Label
+          schema:
+            type: dict
+            attrs:
+              - variable: key
+                label: Key
+                schema:
+                  type: string
+                  required: true
+              - variable: value
+                label: Value
+                schema:
+                  type: string
+                  required: true
+              - variable: containers
+                label: Containers
+                description: Containers where the label should be applied
+                schema:
+                  type: list
+                  items:
+                    - variable: container
+                      label: Container
+                      schema:
+                        type: string
+                        required: true
+                        enum:
+                          - value: omni-infra-provider-bare-metal
+                            description: omni-infra-provider-bare-metal
+
+  - variable: resources
+    label: ""
+    group: Resources Configuration
+    schema:
+      type: dict
+      attrs:
+        - variable: limits
+          label: Limits
+          schema:
+            type: dict
+            attrs:
+              - variable: cpus
+                label: CPUs
+                description: CPUs limit for Omni Bare Metal Provider.
+                schema:
+                  type: int
+                  default: 2
+                  required: true
+              - variable: memory
+                label: Memory (in MB)
+                description: Memory limit for Omni Bare Metal Provider.
+                schema:
+                  type: int
+                  default: 4096
+                  required: true

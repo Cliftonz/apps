@@ -1,0 +1,75 @@
+resources:
+  limits:
+    cpus: 2.0
+    memory: 4096
+
+omni:
+  endpoint: "https://omni.test.example.com"
+  service_account_key: "dGVzdC1rZXktbm90LXJlYWw="
+  insecure_skip_verify: false
+  provider_id: "bare-metal"
+  provider_name: "Bare Metal"
+  provider_description: "Bare metal infrastructure provider"
+  additional_envs: []
+
+api:
+  advertise_address: "192.0.2.10"
+  listen_address: ""
+
+image_factory:
+  base_url: "https://factory.talos.dev"
+  pxe_base_url: "https://pxe.factory.talos.dev"
+  agent_mode_talos_version: "v1.13.0"
+  use_local_boot_assets: false
+
+dhcp:
+  disable_proxy: false
+  disable_broadcast: false
+  iface_or_ip: ""
+
+boot:
+  from_disk_method: "ipxe-exit"
+  ipmi_pxe_boot_mode: "UEFI"
+  secure_boot_enabled: false
+
+redfish:
+  use_when_available: true
+  use_always: false
+  use_https: true
+  insecure_skip_tls_verify: true
+  port: 443
+  set_boot_source_override_mode: true
+
+tls:
+  enabled: false
+  agent_skip_verify: false
+
+advanced:
+  min_reboot_interval: "15m"
+  wipe_with_zeroes: false
+  enable_resource_cache: false
+  debug: false
+  machine_labels:
+    - "rack=test"
+    - "site=lab"
+
+network:
+  host_network: false
+  api_port:
+    bind_mode: published
+    port_number: 50042
+    host_ips: []
+  networks: []
+
+ix_volumes:
+  state: /opt/tests/mnt/state
+
+storage:
+  additional_storage:
+    - type: ix_volume
+      mount_path: /api-power-mgmt-state
+      ix_volume_config:
+        dataset_name: state
+        create_host_path: true
+
+labels: []

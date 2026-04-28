@@ -191,6 +191,7 @@ words:
   - inkl
   - invoiceninja
   - inwx
+  - infraprovider
   - ionos
   - ipaddr
   - ipam
@@ -199,6 +200,8 @@ words:
   - ipinfo
   - ipleak
   - ipmake
+  - ipmi
+  - ipxe
   - isconfigured
   - isready
   - itzg
@@ -260,6 +263,7 @@ words:
   - makemkv
   - mangas
   - manynotes
+  - matchbox
   - matplotlib
   - mdns
   - mebibytes
@@ -323,6 +327,8 @@ words:
   - odoo
   - ollama
   - omada
+  - omni
+  - omnictl
   - omnom
   - onepassword
   - onlyoffice
@@ -358,6 +364,7 @@ words:
   - photoprism
   - photoview
   - pigallery
+  - pxe
   - pihole
   - pipefail
   - piwigo
@@ -392,6 +399,7 @@ words:
   - readarr
   - realpath
   - recyclarr
+  - redfish
   - requestrr
   - restic
   - retrom
@@ -412,6 +420,7 @@ words:
   - rustfs
   - ryshe
   - sabnzbd
+  - sanboot
   - scandir
   - scrollbars
   - scrypted
@@ -443,6 +452,7 @@ words:
   - shoutrrr
   - sickgear
   - sidekiq
+  - sidero
   - sigdb
   - signup
   - slskd
@@ -472,6 +482,7 @@ words:
   - sysctls
   - tailscale
   - tailscaled
+  - talos
   - tandoor
   - tautulli
   - tdarr
